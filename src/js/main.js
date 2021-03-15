@@ -1,150 +1,122 @@
-const {PLAYER1, PLAYER2} = {
-    PLAYER1: {
-        name: "Player1",
-        suit: "",
-    },
-    PLAYER2: {
-        name: "Player2",
-        suit: "",
+class TicTacToe {
+    constructor({
+        PlayField,
+        Player1Name,
+        Player2Name,
+        PlayFirstSuit = "X",
+    }) {
+        this.PLAYER1 = {
+            name: Player1Name?.trim() ? Player1Name : "Player1",
+            suit: PlayFirstSuit
+        };
+        this.PLAYER2 = {
+            name: Player2Name?.trim() ? Player2Name : "Player2",
+            suit: PlayFirstSuit === "X" ? "O" : "X"
+        };
+        this.refs = this.getRefs(PlayField);
+        this.refs.spanPlayerNameRef.textContent = this.PLAYER1.name;
+        this.refs.spanPlayWithRef.textContent = this.PLAYER1.suit;
+        this.refs.playCellCollection.forEach(cell => cell.addEventListener('click', this.putMarkInCell.bind(this)));
     }
-}
 
-/* --------REFS------------- */
-const refs = {
-    formModalRef: document.querySelector('[data-form-modal]'),
-    backdropRef: document.querySelector("[data-backdrop]"),
-    spanPlayerNameRef: document.querySelector('[player-name]'),
-    spanPlayWithRef: document.querySelector('[play-with-xo]'),
-}
-
-const { formModalRef, backdropRef, spanPlayerNameRef, spanPlayWithRef } = refs;
-
-
-/* --------FORM in modal window------------- */
-  const takeFormData = event => {
-    event.preventDefault();
-    const formRef = event.target;
-    const formData = new FormData(formRef);
-    const submittedData = {};
-
-    formData.forEach((value, key) => {
-      submittedData[key] = value;
-    });
-
-      if (submittedData.namePlayer1) {
-          PLAYER1.name = submittedData.namePlayer1;
-      }
-      if (submittedData.namePlayer1) {
-          PLAYER2.name = submittedData.namePlayer2;
-      }
-      PLAYER1.suit = submittedData.choosePlayWith;
-      PLAYER2.suit = PLAYER1.suit === "X" ? "O" : "X";
-
-      spanPlayerNameRef.textContent = PLAYER1.name;
-      spanPlayWithRef.textContent = PLAYER1.suit;
-  };
-
-formModalRef && formModalRef.addEventListener('submit', takeFormData);
-
-
-    /* -------------------Modal Window---------------------- */
-    function toggleModal() {
-        backdropRef.classList.toggle("is-hidden");
-    };
-
-    formModalRef && formModalRef.addEventListener('submit', toggleModal);
-/* ----------------------------------------- */
-
-const playCellCollection = document.querySelectorAll('.play-field td')
-playCellCollection.forEach(cell => cell.addEventListener('click', putMarkInCell));
-
-function putMarkInCell(event) {
-    const currentCell = event.target;
-    if (currentCell.textContent !== '') {
-        return;
+    getRefs(PlayField) {
+        const refs = {};
+        refs.spanPlayerNameRef = PlayField.querySelector('[player-name]');
+        refs.spanPlayWithRef = PlayField.querySelector('[play-with-xo]');
+        refs.playCellCollection = PlayField.querySelectorAll('.play-field td')
+        return refs;
     }
-    currentCell.textContent = spanPlayerNameRef.textContent === PLAYER1.name
-        ? PLAYER1.suit
-        : PLAYER2.suit;
 
-    isWinner(currentCell) && alert("Winner");
-    changePlayer();
-}
+    putMarkInCell(event) {
+        const currentCell = event.target;
+        if (currentCell.textContent !== '') {
+            return;
+        }
+        currentCell.textContent = this.refs.spanPlayerNameRef.textContent === this.PLAYER1.name
+            ? this.PLAYER1.suit
+            : this.PLAYER2.suit;
 
-function changePlayer() {
-    spanPlayerNameRef.textContent === PLAYER1.name
-        ? (spanPlayerNameRef.textContent = PLAYER2.name, spanPlayWithRef.textContent = PLAYER2.suit)
-        : (spanPlayerNameRef.textContent = PLAYER1.name, spanPlayWithRef.textContent = PLAYER1.suit)
-}
+        this.isWinner(currentCell) && alert("Winner");
+        this.changePlayer();
+    }
 
-function isWinner(markedCell) {
-    const mark = markedCell.textContent;
+    changePlayer() {
+        const playerName = this.refs.spanPlayerNameRef;
+        const playWith = this.refs.spanPlayWithRef;
+        playerName.textContent === this.PLAYER1.name
+            ? (playerName.textContent = this.PLAYER2.name, playWith.textContent = this.PLAYER1.suit)
+            : (playerName.textContent = this.PLAYER1.name, playWith.textContent = this.PLAYER2.suit)
+    }
+
+    isWinner(markedCell) {
+        const mark = markedCell.textContent;
+        const cells = this.refs.playCellCollection;
     switch (markedCell.id) {
         case "1":
-            if (playCellCollection[1].textContent === mark && playCellCollection[2].textContent === mark ||
-                playCellCollection[3].textContent === mark && playCellCollection[6].textContent === mark ||
-                playCellCollection[4].textContent === mark && playCellCollection[8].textContent === mark
+            if (cells[1].textContent === mark && cells[2].textContent === mark ||
+                cells[3].textContent === mark && cells[6].textContent === mark ||
+                cells[4].textContent === mark && cells[8].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "2":
-            if (playCellCollection[0].textContent === mark && playCellCollection[2].textContent === mark ||
-                playCellCollection[4].textContent === mark && playCellCollection[7].textContent === mark
+            if (cells[0].textContent === mark && cells[2].textContent === mark ||
+                cells[4].textContent === mark && cells[7].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "3":
-            if (playCellCollection[0].textContent === mark && playCellCollection[1].textContent === mark ||
-                playCellCollection[5].textContent === mark && playCellCollection[8].textContent === mark ||
-                playCellCollection[4].textContent === mark && playCellCollection[6].textContent === mark
+            if (cells[0].textContent === mark && cells[1].textContent === mark ||
+                cells[5].textContent === mark && cells[8].textContent === mark ||
+                cells[4].textContent === mark && cells[6].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "4":
-            if (playCellCollection[0].textContent === mark && playCellCollection[6].textContent === mark ||
-                playCellCollection[4].textContent === mark && playCellCollection[5].textContent === mark
+            if (cells[0].textContent === mark && cells[6].textContent === mark ||
+                cells[4].textContent === mark && cells[5].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "5":
-            if (playCellCollection[0].textContent === mark && playCellCollection[8].textContent === mark ||
-                playCellCollection[1].textContent === mark && playCellCollection[7].textContent === mark ||
-                playCellCollection[2].textContent === mark && playCellCollection[6].textContent === mark ||
-                playCellCollection[3].textContent === mark && playCellCollection[5].textContent === mark
+            if (cells[0].textContent === mark && cells[8].textContent === mark ||
+                cells[1].textContent === mark && cells[7].textContent === mark ||
+                cells[2].textContent === mark && cells[6].textContent === mark ||
+                cells[3].textContent === mark && cells[5].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "6":
-            if (playCellCollection[2].textContent === mark && playCellCollection[8].textContent === mark ||
-                playCellCollection[3].textContent === mark && playCellCollection[4].textContent === mark
+            if (cells[2].textContent === mark && cells[8].textContent === mark ||
+                cells[3].textContent === mark && cells[4].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "7":
-            if (playCellCollection[0].textContent === mark && playCellCollection[3].textContent === mark ||
-                playCellCollection[2].textContent === mark && playCellCollection[4].textContent === mark ||
-                playCellCollection[7].textContent === mark && playCellCollection[8].textContent === mark
+            if (cells[0].textContent === mark && cells[3].textContent === mark ||
+                cells[2].textContent === mark && cells[4].textContent === mark ||
+                cells[7].textContent === mark && cells[8].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "8":
-            if (playCellCollection[1].textContent === mark && playCellCollection[4].textContent === mark ||
-                playCellCollection[6].textContent === mark && playCellCollection[8].textContent === mark
+            if (cells[1].textContent === mark && cells[4].textContent === mark ||
+                cells[6].textContent === mark && cells[8].textContent === mark
             ) {
                 return true;
                 }
             break;
         case "9":
-            if (playCellCollection[0].textContent === mark && playCellCollection[4].textContent === mark ||
-                playCellCollection[2].textContent === mark && playCellCollection[5].textContent === mark ||
-                playCellCollection[6].textContent === mark && playCellCollection[7].textContent === mark
+            if (cells[0].textContent === mark && cells[4].textContent === mark ||
+                cells[2].textContent === mark && cells[5].textContent === mark ||
+                cells[6].textContent === mark && cells[7].textContent === mark
             ) {
                 return true;
                 }
@@ -153,7 +125,45 @@ function isWinner(markedCell) {
         default:
             break;
     }
-    // if ( markedCell.id = 1) {
-    //     return true;
-    // }
 }
+}
+
+
+//========================================================//
+/* --------REFS------------- */
+const refs = {
+    formModalRef: document.querySelector('[data-form-modal]'),
+    backdropRef: document.querySelector("[data-backdrop]"),
+    playArea: document.querySelector('[play-area]'),
+}
+const { formModalRef, backdropRef, playArea} = refs;
+
+
+/* --------FORM in modal window------------- */
+formModalRef.addEventListener('submit', takeFormData);
+function takeFormData(event) {
+    event.preventDefault();
+    const formRef = event.target;
+    const formData = new FormData(formRef);
+    const submittedData = {};
+
+    formData.forEach((value, key) => {
+        submittedData[key] = value;
+    });
+
+    new TicTacToe({
+        PlayField: playArea,
+        Player1Name: submittedData.namePlayer1,
+        Player2Name: submittedData.namePlayer2,
+        PlayFirstSuit: submittedData.choosePlayWith,
+    });
+};
+
+
+
+/* -------------------Modal Window---------------------- */
+formModalRef.addEventListener('submit', toggleModal);
+function toggleModal() {
+    backdropRef.classList.toggle("is-hidden");
+};
+/* ----------------------------------------- */
