@@ -1,0 +1,23 @@
+.container-xo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.play-field td {
+  text-align: center;
+  width: 100px;
+  height: 100px;
+  border: solid 2px #ffca6e;
+  //   border-radius: 10px;
+  background: #fffb7f;
+
+  &:hover {
+    background: #ffca6e;
+  }
+}
