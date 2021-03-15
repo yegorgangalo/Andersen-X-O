@@ -67,7 +67,7 @@ function putMarkInCell(event) {
         ? PLAYER1.suit
         : PLAYER2.suit;
 
-    isWinner(currentCell);
+    isWinner(currentCell) && alert("Winner");
     changePlayer();
 }
 
@@ -79,14 +79,12 @@ function changePlayer() {
 
 function isWinner(markedCell) {
     const mark = markedCell.textContent;
-    // console.log('mark',mark);
     switch (markedCell.id) {
         case "1":
             if (playCellCollection[1].textContent === mark && playCellCollection[2].textContent === mark ||
                 playCellCollection[3].textContent === mark && playCellCollection[6].textContent === mark ||
                 playCellCollection[4].textContent === mark && playCellCollection[8].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -94,7 +92,6 @@ function isWinner(markedCell) {
             if (playCellCollection[0].textContent === mark && playCellCollection[2].textContent === mark ||
                 playCellCollection[4].textContent === mark && playCellCollection[7].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -103,7 +100,6 @@ function isWinner(markedCell) {
                 playCellCollection[5].textContent === mark && playCellCollection[8].textContent === mark ||
                 playCellCollection[4].textContent === mark && playCellCollection[6].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -111,7 +107,6 @@ function isWinner(markedCell) {
             if (playCellCollection[0].textContent === mark && playCellCollection[6].textContent === mark ||
                 playCellCollection[4].textContent === mark && playCellCollection[5].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -121,7 +116,6 @@ function isWinner(markedCell) {
                 playCellCollection[2].textContent === mark && playCellCollection[6].textContent === mark ||
                 playCellCollection[3].textContent === mark && playCellCollection[5].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -129,7 +123,6 @@ function isWinner(markedCell) {
             if (playCellCollection[2].textContent === mark && playCellCollection[8].textContent === mark ||
                 playCellCollection[3].textContent === mark && playCellCollection[4].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -138,7 +131,6 @@ function isWinner(markedCell) {
                 playCellCollection[2].textContent === mark && playCellCollection[4].textContent === mark ||
                 playCellCollection[7].textContent === mark && playCellCollection[8].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -146,7 +138,6 @@ function isWinner(markedCell) {
             if (playCellCollection[1].textContent === mark && playCellCollection[4].textContent === mark ||
                 playCellCollection[6].textContent === mark && playCellCollection[8].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
@@ -155,7 +146,6 @@ function isWinner(markedCell) {
                 playCellCollection[2].textContent === mark && playCellCollection[5].textContent === mark ||
                 playCellCollection[6].textContent === mark && playCellCollection[7].textContent === mark
             ) {
-                console.log('winner');
                 return true;
                 }
             break;
