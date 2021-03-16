@@ -84,6 +84,10 @@ export default class TicTacToe {
             return;
         }
         const { id } = markedCell;
+        if (!(id % 2)) {
+            const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id);
+            return isWin;
+        }
         const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id) || this.checkIsWinDiagonal(id);
         return isWin;
     }
