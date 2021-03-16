@@ -29,6 +29,8 @@ function takeFormData(event) {
         player2Name: submittedData.namePlayer2,
         playFirstSuit: submittedData.choosePlayWith,
     });
+
+
 };
 
 

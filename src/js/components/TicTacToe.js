@@ -23,29 +23,30 @@ export default class TicTacToe {
         this.refs.spanScoreName2Ref.textContent = this.PLAYER2.name;
         this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
         this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
-        this.refs.playCellCollection.forEach(cell => cell.addEventListener('click', this.putMarkInCell.bind(this)));
+        this.refs.playField.addEventListener('click', this.putMarkInCell.bind(this));
     }
 
     getRefs(playField) {
-        const refs = {};
-        refs.spanPlayerNameRef = playField.querySelector('[player-name]');
-        refs.spanPlayWithRef = playField.querySelector('[play-with-xo]');
-        refs.spanScoreName1Ref = playField.querySelector('[score-player1]');
-        refs.spanScoreName2Ref = playField.querySelector('[score-player2]');
-        refs.spanScoreVictory1Ref = playField.querySelector('[score-victory1]');
-        refs.spanScoreVictory2Ref = playField.querySelector('[score-victory2]');
-        refs.playCellCollection = playField.querySelectorAll('.play-field td')
-        return refs;
+        return {
+            playField,
+            spanPlayerNameRef: playField.querySelector('[player-name]'),
+            spanPlayWithRef: playField.querySelector('[play-with-xo]'),
+            spanScoreName1Ref: playField.querySelector('[score-player1]'),
+            spanScoreName2Ref: playField.querySelector('[score-player2]'),
+            spanScoreVictory1Ref: playField.querySelector('[score-victory1]'),
+            spanScoreVictory2Ref: playField.querySelector('[score-victory2]'),
+            playCellCollection: playField.querySelectorAll('.play-field td')
+        }
     }
 
     putMarkInCell(event) {
         const currentCell = event.target;
-        if (currentCell.textContent !== '') {
+        if ( currentCell.tagName !== 'TD' || currentCell.textContent !== '') {
             return;
         }
         this.clickCount += 1;
         currentCell.textContent = this.clickIsOdd() ? this.PLAYER1.suit : this.PLAYER2.suit;
-        this.isWinner(currentCell) && this.endGame();
+        this.isWinner(currentCell.id) && this.endGame();
         this.changePlayer();
     }
 
@@ -79,11 +80,10 @@ export default class TicTacToe {
         }
     }
 
-    isWinner(markedCell) {
+    isWinner(id) {
         if (this.clickCount < 5) {
             return;
         }
-        const { id } = markedCell;
         if (!(id % 2)) {
             const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id);
             return isWin;
