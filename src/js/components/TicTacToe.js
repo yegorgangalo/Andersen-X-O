@@ -1,22 +1,22 @@
 export default class TicTacToe {
     constructor({
-        PlayField,
-        Player1Name,
-        Player2Name,
-        PlayFirstSuit = "X",
+        playField,
+        player1Name,
+        player2Name,
+        playFirstSuit = "X",
     }) {
         this.clickCount = 0;
         this.PLAYER1 = {
-            name: Player1Name?.trim() ? Player1Name : "Player1",
-            suit: PlayFirstSuit,
+            name: player1Name?.trim() ? player1Name : "Player1",
+            suit: playFirstSuit,
             victory: 0
         };
         this.PLAYER2 = {
-            name: Player2Name?.trim() ? Player2Name : "Player2",
-            suit: PlayFirstSuit === "X" ? "O" : "X",
+            name: player2Name?.trim() ? player2Name : "Player2",
+            suit: playFirstSuit === "X" ? "O" : "X",
             victory: 0
         };
-        this.refs = this.getRefs(PlayField);
+        this.refs = this.getRefs(playField);
         this.refs.spanPlayerNameRef.textContent = this.PLAYER1.name;
         this.refs.spanPlayWithRef.textContent = this.PLAYER1.suit;
         this.refs.spanScoreName1Ref.textContent = this.PLAYER1.name;
@@ -26,15 +26,15 @@ export default class TicTacToe {
         this.refs.playCellCollection.forEach(cell => cell.addEventListener('click', this.putMarkInCell.bind(this)));
     }
 
-    getRefs(PlayField) {
+    getRefs(playField) {
         const refs = {};
-        refs.spanPlayerNameRef = PlayField.querySelector('[player-name]');
-        refs.spanPlayWithRef = PlayField.querySelector('[play-with-xo]');
-        refs.spanScoreName1Ref = PlayField.querySelector('[score-player1]');
-        refs.spanScoreName2Ref = PlayField.querySelector('[score-player2]');
-        refs.spanScoreVictory1Ref = PlayField.querySelector('[score-victory1]');
-        refs.spanScoreVictory2Ref = PlayField.querySelector('[score-victory2]');
-        refs.playCellCollection = PlayField.querySelectorAll('.play-field td')
+        refs.spanPlayerNameRef = playField.querySelector('[player-name]');
+        refs.spanPlayWithRef = playField.querySelector('[play-with-xo]');
+        refs.spanScoreName1Ref = playField.querySelector('[score-player1]');
+        refs.spanScoreName2Ref = playField.querySelector('[score-player2]');
+        refs.spanScoreVictory1Ref = playField.querySelector('[score-victory1]');
+        refs.spanScoreVictory2Ref = playField.querySelector('[score-victory2]');
+        refs.playCellCollection = playField.querySelectorAll('.play-field td')
         return refs;
     }
 
@@ -50,13 +50,18 @@ export default class TicTacToe {
     }
 
     clickIsOdd() {
-        return this.clickCount % 2 ? true : false;
+        return Boolean(this.clickCount % 2);
     }
 
     endGame() {
-        this.clickIsOdd()
-            ? (this.PLAYER1.victory += 1, this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory)
-            : (this.PLAYER2.victory += 1, this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory);
+        if (this.clickIsOdd()) {
+            this.PLAYER1.victory += 1;
+            this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
+        } else {
+            this.PLAYER2.victory += 1;
+            this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
+        }
+
         this.refs.playCellCollection.forEach(cell => cell.textContent = '');
         this.clickCount = this.clickIsOdd() ? 1 : 0;
     }
@@ -64,90 +69,82 @@ export default class TicTacToe {
     changePlayer() {
         const playerName = this.refs.spanPlayerNameRef;
         const playWith = this.refs.spanPlayWithRef;
-        this.clickIsOdd()
-            ? (playerName.textContent = this.PLAYER2.name, playWith.textContent = this.PLAYER2.suit)
-            : (playerName.textContent = this.PLAYER1.name, playWith.textContent = this.PLAYER1.suit)
+
+        if (this.clickIsOdd()) {
+            playerName.textContent = this.PLAYER2.name;
+            playWith.textContent = this.PLAYER2.suit;
+        } else {
+            playerName.textContent = this.PLAYER1.name;
+            playWith.textContent = this.PLAYER1.suit;
+        }
     }
 
     isWinner(markedCell) {
         if (this.clickCount < 5) {
             return;
         }
-        const mark = markedCell.textContent;
-        const cells = this.refs.playCellCollection;
-        switch (markedCell.id) {
-            case "1":
-                if (cells[1].textContent === mark && cells[2].textContent === mark ||
-                    cells[3].textContent === mark && cells[6].textContent === mark ||
-                    cells[4].textContent === mark && cells[8].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "2":
-                if (cells[0].textContent === mark && cells[2].textContent === mark ||
-                    cells[4].textContent === mark && cells[7].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "3":
-                if (cells[0].textContent === mark && cells[1].textContent === mark ||
-                    cells[5].textContent === mark && cells[8].textContent === mark ||
-                    cells[4].textContent === mark && cells[6].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "4":
-                if (cells[0].textContent === mark && cells[6].textContent === mark ||
-                    cells[4].textContent === mark && cells[5].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "5":
-                if (cells[0].textContent === mark && cells[8].textContent === mark ||
-                    cells[1].textContent === mark && cells[7].textContent === mark ||
-                    cells[2].textContent === mark && cells[6].textContent === mark ||
-                    cells[3].textContent === mark && cells[5].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "6":
-                if (cells[2].textContent === mark && cells[8].textContent === mark ||
-                    cells[3].textContent === mark && cells[4].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "7":
-                if (cells[0].textContent === mark && cells[3].textContent === mark ||
-                    cells[2].textContent === mark && cells[4].textContent === mark ||
-                    cells[7].textContent === mark && cells[8].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "8":
-                if (cells[1].textContent === mark && cells[4].textContent === mark ||
-                    cells[6].textContent === mark && cells[8].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
-            case "9":
-                if (cells[0].textContent === mark && cells[4].textContent === mark ||
-                    cells[2].textContent === mark && cells[5].textContent === mark ||
-                    cells[6].textContent === mark && cells[7].textContent === mark
-                ) {
-                    return true;
-                    }
-                break;
+        const { id } = markedCell;
+        const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id) || this.checkIsWinDiagonal(id);
+        return isWin;
+    }
 
-            default:
-                break;
+    checkIsWinRow(id) {
+        let index = null;
+        if (id / 3 <= 1) {
+            index = 0;
         }
+        if (id / 3 > 1 && id / 3 <= 2) {
+            index = 3;
+        }
+        if (id / 3 > 2 && id / 3 <= 3) {
+            index = 6;
+        }
+        return this.toCompare(index, 1);
+    }
+
+    checkIsWinColomn(id) {
+        let index = null;
+        if (id % 3 === 1) {
+            index = 0;
+        }
+        if (id % 3 === 2) {
+            index = 1;
+        }
+        if (id % 3 === 0) {
+            index = 2;
+        }
+        return this.toCompare(index, 3);
+    }
+
+    checkIsWinDiagonal(cellId) {
+        const id = Number(cellId);
+        if (id === 1 || id === 9) {
+            return this.isWinMainDiagonal();
+        }
+        if (id === 3 || id === 7) {
+            return this.isWinSecondDiagonal();
+        }
+        if (id === 5) {
+            return this.isWinMainDiagonal() || this.isWinSecondDiagonal();
+        }
+    }
+
+    isWinMainDiagonal() {
+        const index = 0;
+        return this.toCompare(index, 4);
+    }
+
+    isWinSecondDiagonal() {
+        const index = 2;
+        return this.toCompare(index, 2);
+    }
+
+    toCompare(firstCellIndex, gap) {
+        const cells = this.refs.playCellCollection;
+        const firstCell = cells[firstCellIndex].textContent;
+        const secondCell = cells[firstCellIndex + gap].textContent;
+        const thirdCell = cells[firstCellIndex + 2 * gap].textContent;
+        const isWin = (firstCell === secondCell && secondCell === thirdCell);
+        return isWin;
     }
 }

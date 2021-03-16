@@ -22,10 +22,10 @@ function takeFormData(event) {
     });
 
     new TicTacToe({
-        PlayField: playArea,
-        Player1Name: submittedData.namePlayer1,
-        Player2Name: submittedData.namePlayer2,
-        PlayFirstSuit: submittedData.choosePlayWith,
+        playField: playArea,
+        player1Name: submittedData.namePlayer1,
+        player2Name: submittedData.namePlayer2,
+        playFirstSuit: submittedData.choosePlayWith,
     });
 };
 
