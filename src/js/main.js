@@ -21,6 +21,8 @@ function takeFormData(event) {
         submittedData[key] = value;
     });
 
+    playArea.classList.toggle('visually-hidden');
+
     new TicTacToe({
         playField: playArea,
         player1Name: submittedData.namePlayer1,
