@@ -3,18 +3,21 @@ export default class TicTacToe {
         playField,
         player1Name,
         player2Name,
+        player1Victory = 0,
+        player2Victory = 0,
         playFirstSuit = "X",
+        clickCount = 0
     }) {
-        this.clickCount = 0;
+        this._clickCount = clickCount ? clickCount : 0;
         this.PLAYER1 = {
             name: player1Name?.trim() ? player1Name : "Player1",
             suit: playFirstSuit,
-            victory: 0
+            victory: player1Victory ? Number(player1Victory) : 0
         };
         this.PLAYER2 = {
             name: player2Name?.trim() ? player2Name : "Player2",
             suit: playFirstSuit === "X" ? "O" : "X",
-            victory: 0
+            victory: player2Victory ? Number(player2Victory) : 0
         };
         this.refs = this.getRefs(playField);
         this.refs.spanPlayerNameRef.textContent = this.PLAYER1.name;
@@ -24,6 +27,8 @@ export default class TicTacToe {
         this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
         this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
         this.refs.playField.addEventListener('click', this.putMarkInCell.bind(this));
+        this.refs.refreshBtnRef.addEventListener('click', this.refreshGame.bind(this));
+        this.refs.restartBtnRef.addEventListener('click', this.restartGame.bind(this));
     }
 
     getRefs(playField) {
@@ -35,8 +40,15 @@ export default class TicTacToe {
             spanScoreName2Ref: playField.querySelector('[score-player2]'),
             spanScoreVictory1Ref: playField.querySelector('[score-victory1]'),
             spanScoreVictory2Ref: playField.querySelector('[score-victory2]'),
-            playCellCollection: playField.querySelectorAll('.play-field td')
+            playCellCollection: playField.querySelectorAll('.play-field td'),
+            refreshBtnRef: playField.querySelector('[refresh-btn]'),
+            restartBtnRef: playField.querySelector('[restart-btn]'),
+            backdropRef: document.querySelector("[data-backdrop]")
         }
+    }
+
+    getClickCount() {
+        return this._clickCount;
     }
 
     putMarkInCell(event) {
@@ -44,14 +56,14 @@ export default class TicTacToe {
         if ( currentCell.tagName !== 'TD' || currentCell.textContent !== '') {
             return;
         }
-        this.clickCount += 1;
+        this._clickCount += 1;
         currentCell.textContent = this.clickIsOdd() ? this.PLAYER1.suit : this.PLAYER2.suit;
         this.isWinner(currentCell.id) && this.endGame();
         this.changePlayer();
     }
 
     clickIsOdd() {
-        return Boolean(this.clickCount % 2);
+        return Boolean(this._clickCount % 2);
     }
 
     endGame() {
@@ -63,8 +75,20 @@ export default class TicTacToe {
             this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
         }
 
+        this.refreshGame();
+        this._clickCount = this.clickIsOdd() ? 1 : 0;
+    }
+
+    refreshGame() {
         this.refs.playCellCollection.forEach(cell => cell.textContent = '');
-        this.clickCount = this.clickIsOdd() ? 1 : 0;
+    }
+
+    restartGame() {
+        localStorage.removeItem('playProgressXO');
+        this.refreshGame();
+        const { playField, backdropRef} = this.refs;
+        playField.classList.toggle('visually-hidden');
+        backdropRef.classList.toggle("is-hidden");
     }
 
     changePlayer() {
@@ -81,7 +105,7 @@ export default class TicTacToe {
     }
 
     isWinner(id) {
-        if (this.clickCount < 5) {
+        if (this._clickCount < 5) {
             return;
         }
         if (!(id % 2)) {
