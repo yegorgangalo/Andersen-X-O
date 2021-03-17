@@ -1,7 +1,11 @@
-<div class="container-xo">
+<div class="container-xo visually-hidden" play-area>
     <h1>Tic Tac Toe</h1>
-    <table class="play-field">
-        <tbody>
+    <section>
+        <span>Turn to play: </span>
+        <span class="turn-to-play" player-name></span> by <span class="turn-to-play" play-with-xo></span>
+    </section>
+
+    <table class="play-field" play-field>
             <tr>
                 <td id="1"></td>
                 <td id="2"></td>
@@ -17,6 +21,21 @@
                 <td id="8"></td>
                 <td id="9"></td>
             </tr>
-        </tbody>
     </table>
+
+    <section  class="score-wrap">
+            <div id="player1" class="score-player">
+                <span score-player1>Player1</span>
+                <span score-victory1>0</span>
+            </div>
+            <h2>SCORE</h2>
+            <div id="player2" class="score-player">
+                <span score-player2>Player2</span>
+                <span score-victory2>0</span>
+            </div>
+    </section>
+    <section class="refresh">
+        <button type="button" class="btn btn-primary button" refresh-btn>Refresh Battle</button>
+        <button type="button" class="btn btn-primary button" restart-btn>Restart Game</button>
+    </section>
 </div>

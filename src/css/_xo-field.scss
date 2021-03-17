@@ -7,17 +7,45 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+
+  section {
+    margin-bottom: 12px;
+  }
+}
+
+.turn-to-play {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.play-field {
+  margin-bottom: 12px;
 }
 
 .play-field td {
   text-align: center;
   width: 100px;
   height: 100px;
+  cursor: pointer;
   border: solid 2px #ffca6e;
-  //   border-radius: 10px;
   background: #fffb7f;
 
   &:hover {
     background: #ffca6e;
   }
+}
+
+.score-wrap {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.score-player {
+  display: flex;
+  flex-direction: column;
+}
+
+.refresh {
+  display: flex;
 }

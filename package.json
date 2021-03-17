@@ -19,6 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/preset-env": "^7.12.7",
     "@pnotify/core": "^5.2.0",
     "@pnotify/mobile": "^5.2.0",
@@ -45,11 +46,5 @@
     "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
   },
-  "dependencies": {
-    "basiclightbox": "^5.0.3",
-    "handlebars": "^4.7.6",
-    "lodash.debounce": "^4.0.8",
-    "lodash.throttle": "^4.1.1",
-    "spin.js": "^4.1.0"
-  }
+  "dependencies": {}
 }
