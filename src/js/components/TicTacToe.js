@@ -126,11 +126,9 @@ export default class TicTacToe {
 
     isWinner(id) {
         if (!(id % 2)) {
-            const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id);
-            return isWin;
+            return this.checkIsWinRow(id) || this.checkIsWinColomn(id);
         }
-        const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id) || this.checkIsWinDiagonal(id);
-        return isWin;
+        return this.checkIsWinRow(id) || this.checkIsWinColomn(id) || this.checkIsWinDiagonal(id);
     }
 
     checkIsWinRow(id) {
@@ -182,7 +180,6 @@ export default class TicTacToe {
         const firstCell = cells[firstCellIndex].textContent;
         const secondCell = cells[firstCellIndex + gap].textContent;
         const thirdCell = cells[firstCellIndex + 2 * gap].textContent;
-        const isWin = (firstCell === secondCell && secondCell === thirdCell);
-        return isWin;
+        return firstCell === secondCell && secondCell === thirdCell;
     }
 }
