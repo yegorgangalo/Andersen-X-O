@@ -5,19 +5,19 @@ export default class TicTacToe {
         player2Name,
         player1Victory = 0,
         player2Victory = 0,
-        playFirstSuit = "X",
+        playNextSuit = "X",
         clickCount = 0
     }) {
-        this._clickCount = clickCount ? clickCount : 0;
+        this._clickCount = clickCount || 0;
         this.PLAYER1 = {
-            name: player1Name?.trim() ? player1Name : "Player1",
-            suit: playFirstSuit,
-            victory: player1Victory ? Number(player1Victory) : 0
+            name: player1Name?.trim() || "Player1",
+            suit: playNextSuit,
+            victory: Number(player1Victory) || 0
         };
         this.PLAYER2 = {
-            name: player2Name?.trim() ? player2Name : "Player2",
-            suit: playFirstSuit === "X" ? "O" : "X",
-            victory: player2Victory ? Number(player2Victory) : 0
+            name: player2Name?.trim() || "Player2",
+            suit: playNextSuit === "X" ? "O" : "X",
+            victory: Number(player2Victory) || 0
         };
         this.refs = this.getRefs(playField);
         this.refs.spanPlayerNameRef.textContent = this.PLAYER1.name;
@@ -26,9 +26,9 @@ export default class TicTacToe {
         this.refs.spanScoreName2Ref.textContent = this.PLAYER2.name;
         this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
         this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
-        this.refs.playField.addEventListener('click', this.putMarkInCell.bind(this));
-        this.refs.refreshBtnRef.addEventListener('click', this.refreshGame.bind(this));
-        this.refs.restartBtnRef.addEventListener('click', this.restartGame.bind(this));
+        this.refs.playField.addEventListener('click', this.putMarkInCell);
+        this.refs.refreshBtnRef.addEventListener('click', this.refreshGame);
+        this.refs.restartBtnRef.addEventListener('click', this.restartGame);
     }
 
     getRefs(playField) {
@@ -51,22 +51,38 @@ export default class TicTacToe {
         return this._clickCount;
     }
 
-    putMarkInCell(event) {
-        const currentCell = event.target;
-        if ( currentCell.tagName !== 'TD' || currentCell.textContent !== '') {
+    putMarkInCell = ({ target }) => {
+        const { id, textContent, tagName } = target;
+        if ( tagName !== 'TD' || textContent !== '') {
             return;
         }
         this._clickCount += 1;
-        currentCell.textContent = this.clickIsOdd() ? this.PLAYER1.suit : this.PLAYER2.suit;
-        this.isWinner(currentCell.id) && this.endGame();
+        target.textContent = this.clickIsOdd() ? this.PLAYER1.suit : this.PLAYER2.suit;
         this.changePlayer();
+        if (this._clickCount < 5) {
+            return;
+        }
+        const isWinner = this.isWinner(id);
+        if (isWinner) {
+            this.addPlusOneVictory();
+            this.refreshGame();
+            return;
+        }
+        if (this._clickCount > 8 && this.checkIsAllCellsMarked() && !isWinner) {
+            this.refreshGame();
+            return;
+        }
     }
 
     clickIsOdd() {
         return Boolean(this._clickCount % 2);
     }
 
-    endGame() {
+    checkIsAllCellsMarked() {
+        return ![...this.refs.playCellCollection].find(cell => cell.textContent === '');
+    }
+
+    addPlusOneVictory() {
         if (this.clickIsOdd()) {
             this.PLAYER1.victory += 1;
             this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
@@ -74,21 +90,25 @@ export default class TicTacToe {
             this.PLAYER2.victory += 1;
             this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
         }
+    }
 
-        this.refreshGame();
+    refreshGame = () => {
+        this.refs.playCellCollection.forEach(cell => cell.textContent = '');
         this._clickCount = this.clickIsOdd() ? 1 : 0;
     }
 
-    refreshGame() {
-        this.refs.playCellCollection.forEach(cell => cell.textContent = '');
-    }
-
-    restartGame() {
+    restartGame = () => {
         localStorage.removeItem('playProgressXO');
         this.refreshGame();
-        const { playField, backdropRef} = this.refs;
+        const { playField, backdropRef,refreshBtnRef, restartBtnRef} = this.refs;
         playField.classList.toggle('visually-hidden');
         backdropRef.classList.toggle("is-hidden");
+        playField.removeEventListener('click', this.putMarkInCell);
+        refreshBtnRef.removeEventListener('click', this.refreshGame);
+        restartBtnRef.removeEventListener('click', this.restartGame);
+        this.PLAYER1 = null;
+        this.PLAYER2 = null;
+        this.refs = null
     }
 
     changePlayer() {
@@ -105,9 +125,6 @@ export default class TicTacToe {
     }
 
     isWinner(id) {
-        if (this._clickCount < 5) {
-            return;
-        }
         if (!(id % 2)) {
             const isWin = this.checkIsWinRow(id) || this.checkIsWinColomn(id);
             return isWin;
@@ -145,26 +162,19 @@ export default class TicTacToe {
     }
 
     checkIsWinDiagonal(cellId) {
+        const isWinMainDiagonal = () => this.toCompare(0, 4);
+        const isWinSecondDiagonal = () => this.toCompare(2, 2);
+
         const id = Number(cellId);
         if (id === 1 || id === 9) {
-            return this.isWinMainDiagonal();
+            return isWinMainDiagonal();
         }
         if (id === 3 || id === 7) {
-            return this.isWinSecondDiagonal();
+            return isWinSecondDiagonal();
         }
         if (id === 5) {
-            return this.isWinMainDiagonal() || this.isWinSecondDiagonal();
+            return isWinMainDiagonal() || isWinSecondDiagonal();
         }
-    }
-
-    isWinMainDiagonal() {
-        const index = 0;
-        return this.toCompare(index, 4);
-    }
-
-    isWinSecondDiagonal() {
-        const index = 2;
-        return this.toCompare(index, 2);
     }
 
     toCompare(firstCellIndex, gap) {

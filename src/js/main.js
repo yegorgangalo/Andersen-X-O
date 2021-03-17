@@ -20,8 +20,8 @@ const { formModalRef, backdropRef, playArea, playCellCollection} = refs;
     playArea.classList.toggle('visually-hidden');
     const playProgressString = localStorage.getItem('playProgressXO');
     const playProgressObj = JSON.parse(playProgressString);
-    const { nextPlayerName, nextPlayWith, scoreName1, scoreName2, scoreVictory1, scoreVictory2, clickCount, playCellContent} = playProgressObj;
-    playCellCollection.forEach((cell, idx) => cell.textContent=playCellContent[idx])
+    const { scoreName1, scoreName2, scoreVictory1, scoreVictory2, clickCount, playCellContent} = playProgressObj;
+    playCellCollection.forEach((cell, idx) => cell.textContent = playCellContent[idx])
 
     const xo = new TicTacToe({
         playField: playArea,
@@ -29,7 +29,6 @@ const { formModalRef, backdropRef, playArea, playCellCollection} = refs;
         player2Name: scoreName2,
         player1Victory: scoreVictory1,
         player2Victory: scoreVictory2,
-        playFirstSuit: nextPlayWith,
         clickCount: clickCount
     });
 
@@ -58,28 +57,26 @@ function takeFormData(event) {
 
     playArea.classList.toggle('visually-hidden');
 
+    const { namePlayer1, namePlayer2, choosePlayWith} = submittedData;
     const xo = new TicTacToe({
         playField: playArea,
-        player1Name: submittedData.namePlayer1,
-        player2Name: submittedData.namePlayer2,
-        playFirstSuit: submittedData.choosePlayWith,
+        player1Name: namePlayer1,
+        player2Name: namePlayer2,
+        playNextSuit: choosePlayWith,
     });
 
     window.addEventListener('beforeunload', ()=>setLocalStorage(xo));
 };
 
 function setLocalStorage(xoObj) {
+    const { PLAYER1, PLAYER2 } = xoObj;
     const playProgressObj = {
-            nextPlayerName: document.querySelector('[player-name]').textContent,
-            nextPlayWith: document.querySelector('[play-with-xo]').textContent,
-            scoreName1: document.querySelector('[score-player1]').textContent,
-            scoreName2: document.querySelector('[score-player2]').textContent,
-            scoreVictory1: document.querySelector('[score-victory1]').textContent,
-            scoreVictory2: document.querySelector('[score-victory2]').textContent,
+            scoreName1: PLAYER1.name,
+            scoreName2: PLAYER2.name,
+            scoreVictory1: PLAYER1.victory,
+            scoreVictory2: PLAYER2.victory,
             clickCount: xoObj.getClickCount(),
             playCellContent: [...playCellCollection].map(cell => cell.textContent)
     }
-
-    console.log(JSON.stringify(playProgressObj));
     localStorage.setItem('playProgressXO', JSON.stringify(playProgressObj));
 }
