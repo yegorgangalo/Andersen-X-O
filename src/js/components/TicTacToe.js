@@ -5,35 +5,36 @@ export default class TicTacToe {
         player2Name,
         player1Victory = 0,
         player2Victory = 0,
-        playNextSuit = "X",
+        player1Suit,
         clickCount = 0
     }) {
         this._clickCount = clickCount || 0;
         this.PLAYER1 = {
             name: player1Name?.trim() || "Player1",
-            suit: playNextSuit,
+            suit: player1Suit || "X",
             victory: Number(player1Victory) || 0
         };
         this.PLAYER2 = {
             name: player2Name?.trim() || "Player2",
-            suit: playNextSuit === "X" ? "O" : "X",
+            suit: player1Suit === "X" ? "O" : "X",
             victory: Number(player2Victory) || 0
         };
         this.refs = this.getRefs(playField);
-        this.refs.spanPlayerNameRef.textContent = this.PLAYER1.name;
-        this.refs.spanPlayWithRef.textContent = this.PLAYER1.suit;
-        this.refs.spanScoreName1Ref.textContent = this.PLAYER1.name;
-        this.refs.spanScoreName2Ref.textContent = this.PLAYER2.name;
-        this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
-        this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
-        this.refs.playField.addEventListener('click', this.putMarkInCell);
-        this.refs.refreshBtnRef.addEventListener('click', this.refreshGame);
-        this.refs.restartBtnRef.addEventListener('click', this.restartGame);
+        const { spanPlayerNameRef, spanPlayWithRef, spanScoreName1Ref, spanScoreName2Ref, spanScoreVictory1Ref, spanScoreVictory2Ref, playFieldRef, refreshBtnRef, restartBtnRef } = this.refs;
+        spanPlayerNameRef.textContent = this.clickIsOdd() ? this.PLAYER2.name : this.PLAYER1.name;
+        spanPlayWithRef.textContent = this.clickIsOdd() ? this.PLAYER2.suit : this.PLAYER1.suit;
+        spanScoreName1Ref.textContent = this.PLAYER1.name;
+        spanScoreName2Ref.textContent = this.PLAYER2.name;
+        spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
+        spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
+        playFieldRef.addEventListener('click', this.putMarkInCell);
+        refreshBtnRef.addEventListener('click', this.refreshGame);
+        restartBtnRef.addEventListener('click', this.restartGame);
     }
 
     getRefs(playField) {
         return {
-            playField,
+            playFieldRef: playField,
             spanPlayerNameRef: playField.querySelector('[player-name]'),
             spanPlayWithRef: playField.querySelector('[play-with-xo]'),
             spanScoreName1Ref: playField.querySelector('[score-player1]'),
@@ -47,9 +48,7 @@ export default class TicTacToe {
         }
     }
 
-    getClickCount() {
-        return this._clickCount;
-    }
+    getClickCount = () => this._clickCount;
 
     putMarkInCell = ({ target }) => {
         const { id, textContent, tagName } = target;
@@ -86,10 +85,10 @@ export default class TicTacToe {
         if (this.clickIsOdd()) {
             this.PLAYER1.victory += 1;
             this.refs.spanScoreVictory1Ref.textContent = this.PLAYER1.victory;
-        } else {
-            this.PLAYER2.victory += 1;
-            this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
+            return;
         }
+        this.PLAYER2.victory += 1;
+        this.refs.spanScoreVictory2Ref.textContent = this.PLAYER2.victory;
     }
 
     refreshGame = () => {
@@ -100,28 +99,26 @@ export default class TicTacToe {
     restartGame = () => {
         localStorage.removeItem('playProgressXO');
         this.refreshGame();
-        const { playField, backdropRef,refreshBtnRef, restartBtnRef} = this.refs;
-        playField.classList.toggle('visually-hidden');
+        const { playFieldRef, backdropRef,refreshBtnRef, restartBtnRef} = this.refs;
+        playFieldRef.classList.toggle('visually-hidden');
         backdropRef.classList.toggle("is-hidden");
-        playField.removeEventListener('click', this.putMarkInCell);
+        playFieldRef.removeEventListener('click', this.putMarkInCell);
         refreshBtnRef.removeEventListener('click', this.refreshGame);
         restartBtnRef.removeEventListener('click', this.restartGame);
         this.PLAYER1 = null;
         this.PLAYER2 = null;
-        this.refs = null
+        this.refs = null;
     }
 
     changePlayer() {
-        const playerName = this.refs.spanPlayerNameRef;
-        const playWith = this.refs.spanPlayWithRef;
-
+        const { spanPlayerNameRef, spanPlayWithRef } = this.refs;
         if (this.clickIsOdd()) {
-            playerName.textContent = this.PLAYER2.name;
-            playWith.textContent = this.PLAYER2.suit;
-        } else {
-            playerName.textContent = this.PLAYER1.name;
-            playWith.textContent = this.PLAYER1.suit;
+            spanPlayerNameRef.textContent = this.PLAYER2.name;
+            spanPlayWithRef.textContent = this.PLAYER2.suit;
+            return;
         }
+        spanPlayerNameRef.textContent = this.PLAYER1.name;
+        spanPlayWithRef.textContent = this.PLAYER1.suit;
     }
 
     isWinner(id) {

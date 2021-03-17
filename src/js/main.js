@@ -20,28 +20,34 @@ const { formModalRef, backdropRef, playArea, playCellCollection} = refs;
     playArea.classList.toggle('visually-hidden');
     const playProgressString = localStorage.getItem('playProgressXO');
     const playProgressObj = JSON.parse(playProgressString);
-    const { scoreName1, scoreName2, scoreVictory1, scoreVictory2, clickCount, playCellContent} = playProgressObj;
+    const { PLAYER1, PLAYER2, clickCount, playCellContent} = playProgressObj;
     playCellCollection.forEach((cell, idx) => cell.textContent = playCellContent[idx])
 
     const xo = new TicTacToe({
         playField: playArea,
-        player1Name: scoreName1,
-        player2Name: scoreName2,
-        player1Victory: scoreVictory1,
-        player2Victory: scoreVictory2,
-        clickCount: clickCount
+        player1Name: PLAYER1.name,
+        player2Name: PLAYER2.name,
+        player1Victory: PLAYER1.victory,
+        player2Victory: PLAYER2.victory,
+        player1Suit:PLAYER1.suit,
+        clickCount
     });
 
     window.addEventListener('beforeunload', () => setLocalStorage(xo));
-
 })()
 
-/* -------------------Modal Window---------------------- */
-formModalRef.addEventListener('submit', toggleModal);
-function toggleModal() {
-    backdropRef.classList.toggle("is-hidden");
-};
-/* ----------------------------------------- */
+function setLocalStorage({ PLAYER1, PLAYER2, getClickCount }) {
+    if (!PLAYER1 || !PLAYER2 || !getClickCount) {
+        return;
+    }
+    const playProgressObj = {
+        PLAYER1,
+        PLAYER2,
+        clickCount: getClickCount(),
+        playCellContent: [...playCellCollection].map(cell => cell.textContent)
+    }
+    localStorage.setItem('playProgressXO', JSON.stringify(playProgressObj));
+}
 
 /* --------FORM in modal window------------- */
 formModalRef.addEventListener('submit', takeFormData);
@@ -62,21 +68,15 @@ function takeFormData(event) {
         playField: playArea,
         player1Name: namePlayer1,
         player2Name: namePlayer2,
-        playNextSuit: choosePlayWith,
+        player1Suit: choosePlayWith,
     });
 
     window.addEventListener('beforeunload', ()=>setLocalStorage(xo));
 };
 
-function setLocalStorage(xoObj) {
-    const { PLAYER1, PLAYER2 } = xoObj;
-    const playProgressObj = {
-            scoreName1: PLAYER1.name,
-            scoreName2: PLAYER2.name,
-            scoreVictory1: PLAYER1.victory,
-            scoreVictory2: PLAYER2.victory,
-            clickCount: xoObj.getClickCount(),
-            playCellContent: [...playCellCollection].map(cell => cell.textContent)
-    }
-    localStorage.setItem('playProgressXO', JSON.stringify(playProgressObj));
-}
+/* -------------------Modal Window---------------------- */
+formModalRef.addEventListener('submit', toggleModal);
+function toggleModal() {
+    backdropRef.classList.toggle("is-hidden");
+};
+/* ----------------------------------------- */
