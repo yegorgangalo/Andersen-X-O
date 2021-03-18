@@ -8,6 +8,16 @@ export default class TicTacToe {
         player1Suit,
         clickCount = 0
     }) {
+        this.winCombinations = [
+	    	[0, 1, 2],
+	    	[3, 4, 5],
+	    	[6, 7, 8],
+	    	[0, 3, 6],
+	    	[1, 4, 7],
+	    	[2, 5, 8],
+	    	[0, 4, 8],
+	    	[2, 4, 6],
+	    ];
         this._clickCount = clickCount || 0;
         this.PLAYER1 = {
             name: player1Name?.trim() || "Player1",
@@ -61,7 +71,7 @@ export default class TicTacToe {
         if (this._clickCount < 5) {
             return;
         }
-        const isWinner = this.isWinner(id);
+        const isWinner = this.isWinner(this.refs.playCellCollection);
         if (isWinner) {
             this.addPlusOneVictory();
             this.refreshGame();
@@ -121,62 +131,11 @@ export default class TicTacToe {
         spanPlayWithRef.textContent = this.PLAYER1.suit;
     }
 
-    isWinner(id) {
-        if (!(id % 2)) {
-            return this.checkIsWinRow(id) || this.checkIsWinColomn(id);
-        }
-        return this.checkIsWinRow(id) || this.checkIsWinColomn(id) || this.checkIsWinDiagonal(id);
-    }
-
-    checkIsWinRow(id) {
-        let index = null;
-        if (id / 3 <= 1) {
-            index = 0;
-        }
-        if (id / 3 > 1 && id / 3 <= 2) {
-            index = 3;
-        }
-        if (id / 3 > 2 && id / 3 <= 3) {
-            index = 6;
-        }
-        return this.toCompare(index, 1);
-    }
-
-    checkIsWinColomn(id) {
-        let index = null;
-        if (id % 3 === 1) {
-            index = 0;
-        }
-        if (id % 3 === 2) {
-            index = 1;
-        }
-        if (id % 3 === 0) {
-            index = 2;
-        }
-        return this.toCompare(index, 3);
-    }
-
-    checkIsWinDiagonal(cellId) {
-        const isWinMainDiagonal = () => this.toCompare(0, 4);
-        const isWinSecondDiagonal = () => this.toCompare(2, 2);
-
-        const id = Number(cellId);
-        if (id === 1 || id === 9) {
-            return isWinMainDiagonal();
-        }
-        if (id === 3 || id === 7) {
-            return isWinSecondDiagonal();
-        }
-        if (id === 5) {
-            return isWinMainDiagonal() || isWinSecondDiagonal();
-        }
-    }
-
-    toCompare(firstCellIndex, gap) {
-        const cells = this.refs.playCellCollection;
-        const firstCell = cells[firstCellIndex].textContent;
-        const secondCell = cells[firstCellIndex + gap].textContent;
-        const thirdCell = cells[firstCellIndex + 2 * gap].textContent;
-        return firstCell === secondCell && secondCell === thirdCell;
+    isWinner(cells) {
+        return !!this.winCombinations.find(comb =>
+            (cells[comb[0]].textContent === cells[comb[1]].textContent &&
+    		cells[comb[0]].textContent === cells[comb[2]].textContent &&
+            !!cells[comb[0]].textContent)
+        )
     }
 }
