@@ -131,11 +131,13 @@ export default class TicTacToe {
         spanPlayWithRef.textContent = this.PLAYER1.suit;
     }
 
-    isWinner(cells) {
-        return !!this.winCombinations.find(comb =>
-            (cells[comb[0]].textContent === cells[comb[1]].textContent &&
-    		cells[comb[0]].textContent === cells[comb[2]].textContent &&
-            !!cells[comb[0]].textContent)
+    isWinner(cellCollection) {
+        return !!this.winCombinations.find(combo => {
+            const cell1 = cellCollection[combo[0]].textContent;
+            const cell2 = cellCollection[combo[1]].textContent;
+            const cell3 = cellCollection[combo[2]].textContent;
+            return cell1 === cell2 && cell2 === cell3 && cell3 !== "";
+            }
         )
     }
 }
