@@ -9,7 +9,6 @@ const refs = {
 }
 const { formModalRef, backdropRef, playArea, playCellCollection} = refs;
 
-
 /* -------------------LOCAL STORAGE----------------------- */
 (() => {
     if (!localStorage.getItem('playProgressXO')) {
@@ -71,11 +70,11 @@ function takeFormData(event) {
         player1Suit: choosePlayWith,
     });
 
-    window.addEventListener('beforeunload', ()=>setLocalStorage(xo));
+    window.addEventListener('beforeunload', () => setLocalStorage(xo));
+    toggleModal();
 };
 
 /* -------------------Modal Window---------------------- */
-formModalRef.addEventListener('submit', toggleModal);
 function toggleModal() {
     backdropRef.classList.toggle("is-hidden");
 };
